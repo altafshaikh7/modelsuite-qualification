@@ -11,6 +11,6 @@ router.put('/:id/review', protect, adminOnly, reviewSubmission);
 // ── Talent routes ──
 // so the file is saved to disk even if the request is later rejected
 router.post('/:taskId', protect, upload.single('file'), submitTask);
-router.get('/:taskId', protect, getSubmission);
+router.get('/:taskId', protect, adminOnly, getSubmission);
 
 module.exports = router;
