@@ -49,6 +49,15 @@ const claimTask = async (req, res) => {
       return res.status(404).json({ message: 'Task not found' });
     }
 
+    // Authorization: Talent can only access if task is Open OR assigned to them
+    const isOpen = task.status === 'Open';
+    const isAssignedToUser = task.assignedTo && task.assignedTo.toString() === req.user._id.toString();
+
+    if (!isOpen && !isAssignedToUser) {
+      return res.status(403).json({ message: 'Access denied: You cannot access this task' });
+    }
+
+    // Only allow claiming if task is still Open
     if (task.status !== 'Open') {
       return res.status(400).json({ message: 'Task is no longer available' });
     }
