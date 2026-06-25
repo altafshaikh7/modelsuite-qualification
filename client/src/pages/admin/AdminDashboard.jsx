@@ -56,9 +56,9 @@ const AdminDashboard = () => {
   /* Filter tasks */
   const filteredTasks = tasks.filter((t) => {
     const matchSearch = !search ||
-      t.title?.toLowerCase().includes(search.toLowerCase()) ||
-      t.assignedTo?.name?.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === 'All' || t.status === statusFilter;
+      t.title?.toLowerCase().includes(search.toLowerCase());
+    const effectiveStatus = statusFilter === 'Completed' ? 'Approved' : statusFilter;
+    const matchStatus = statusFilter === 'All' || t.status === effectiveStatus;
     return matchSearch && matchStatus;
   });
 
@@ -150,7 +150,7 @@ const AdminDashboard = () => {
                 <option value="Open">Open</option>
                 <option value="Claimed">Claimed</option>
                 <option value="Submitted">Submitted</option>
-                <option value="Approved">Approved</option>
+                <option value="Completed">Completed</option>
                 <option value="Rejected">Rejected</option>
               </select>
             </div>
