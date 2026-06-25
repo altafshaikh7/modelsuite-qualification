@@ -14,6 +14,7 @@ const EditTaskModal = ({ task, onClose, onUpdated }) => {
     dueDate:     task.dueDate     || '',
   });
   const [talents, setTalents] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useState(() => {
     fetchTalents().then(({ data }) => setTalents(data)).catch(() => {});
@@ -23,12 +24,15 @@ const EditTaskModal = ({ task, onClose, onUpdated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { data } = await updateTask(task._id, { ...form, assignedTo: form.assignedTo || null });
       onUpdated(data);
       onClose();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to update task');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,13 +83,13 @@ const EditTaskModal = ({ task, onClose, onUpdated }) => {
           </div>
 
           <div className="flex justify-end gap-2.5 pt-1 border-t border-border mt-1">
-            <button type="button" onClick={onClose}
-              className="px-5 py-2.5 bg-bg-input text-text-muted border border-border rounded-lg text-sm font-medium cursor-pointer hover:bg-bg-hover hover:text-text-primary transition-all font-sans">
+            <button type="button" onClick={onClose} disabled={loading}
+              className="px-5 py-2.5 bg-bg-input text-text-muted border border-border rounded-lg text-sm font-medium cursor-pointer hover:bg-bg-hover hover:text-text-primary transition-all font-sans disabled:opacity-50 disabled:cursor-not-allowed">
               Cancel
             </button>
-            <button type="submit"
-              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer btn-gradient border-none font-sans">
-              Save Changes
+            <button type="submit" disabled={loading}
+              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer btn-gradient border-none font-sans disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>
