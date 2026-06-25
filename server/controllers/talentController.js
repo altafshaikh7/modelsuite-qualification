@@ -36,6 +36,11 @@ const getMyTasks = async (req, res) => {
 // @access Talent
 const claimTask = async (req, res) => {
   try {
+    // Ensure only Talent users can claim tasks
+    if (req.user.role !== 'Talent') {
+      return res.status(403).json({ message: 'Only Talent users can claim tasks' });
+    }
+
     // Two talents can both pass the status === 'Open' check before either saves,
     // then both write Claimed. Proper fix: findOneAndUpdate({ _id, status: 'Open' })
     const task = await Task.findById(req.params.id);
